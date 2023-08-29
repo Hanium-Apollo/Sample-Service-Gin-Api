@@ -4,11 +4,13 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64
 
-WORKDIR /build
-COPY go.mod go.sum main.go ./
+WORKDIR /app
+COPY go.mod go.sum ./
 RUN go mod download
-RUN go build -o main .
+COPY . .
+RUN go build -o main ./main.go
 
-FROM alpine
-COPY --from=builder /build/main /main
+FROM alpine:latest
+COPY --from=builder /app/main /main
+COPY --from=builder /app/.env /.env
 CMD ["/main"]
