@@ -6,6 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func HealthCheck(c *gin.Context) {
+	c.JSON(200, gin.H{"data": "ok"})
+}
+
 func GetSchedules(c *gin.Context) {
 	var schedules []database.Schedule
 	database.DB.Find(&schedules)
