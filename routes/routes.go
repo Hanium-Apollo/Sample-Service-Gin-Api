@@ -1,27 +1,25 @@
 package routes
 
 import (
-	"fmt"
-	"net/http"
 	"scheduleCRUD/handler"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func RedirectToHttps() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if c.Request.TLS == nil {
-			target := fmt.Sprintf("https://%s%s", c.Request.Host, c.Request.URL.Path)
-			c.Redirect(http.StatusMovedPermanently, target)
-			c.Abort()
-		}
-	}
-}
+// func RedirectToHttps() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		if c.Request.TLS == nil {
+// 			target := fmt.Sprintf("https://%s%s", c.Request.Host, c.Request.URL.Path)
+// 			c.Redirect(http.StatusMovedPermanently, target)
+// 			c.Abort()
+// 		}
+// 	}
+// }
 
 func SetupRoutes() *gin.Engine {
 	r := gin.Default()
-	r.Use(RedirectToHttps())
+	// r.Use(RedirectToHttps())
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	config.AllowMethods = []string{"GET", "POST", "PATCH", "DELETE"}
