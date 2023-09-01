@@ -6,10 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func HealthCheck(c *gin.Context) {
+	c.JSON(200, gin.H{"data": "ok"})
+}
+
 func GetSchedules(c *gin.Context) {
 	var schedules []database.Schedule
 	database.DB.Find(&schedules)
-	c.JSON(200, gin.H{"data": schedules})
+	c.JSON(200, schedules)
 }
 
 func CreateSchedule(c *gin.Context) {
@@ -19,18 +23,20 @@ func CreateSchedule(c *gin.Context) {
 		return
 	}
 	database.DB.Create(&schedule)
-	c.JSON(200, gin.H{"data": schedule})
+	c.JSON(200, gin.H{"data": "Schedule is created successfully"})
 }
 
 func UpdateSchedule(c *gin.Context) {
 	id := c.Param("id")
 	var schedule database.Schedule
-	if database.DB.First(&schedule, id).Error != nil {
+	if err := database.DB.First(&schedule, id).Error; err != nil {
 		c.JSON(404, gin.H{"error": "Schedule not found"})
-		return
+	}
+	if err := c.ShouldBindJSON(&schedule); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
 	}
 	database.DB.Save(&schedule)
-	c.JSON(200, gin.H{"data": schedule})
+	c.JSON(200, gin.H{"data": "Schedule is updated successfully"})
 }
 
 func DeleteSchedule(c *gin.Context) {
@@ -41,5 +47,5 @@ func DeleteSchedule(c *gin.Context) {
 		return
 	}
 	database.DB.Delete(&schedule)
-	c.JSON(200, gin.H{"data": true})
+	c.JSON(200, gin.H{"data": "Schedule is deleted successfully"})
 }
